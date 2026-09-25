@@ -1,0 +1,2918 @@
+<!doctype html>
+<html lang="th">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>HORPAK · Interactive prototype</title>
+<style>
+    :root {
+        --brand: #1677ff;
+        --soft: #eaf3ff;
+        --bg: #f2f7fc;
+        --ink: #243247;
+        --muted: #708098;
+        --line: #e4ecf5
+    }
+
+    * {
+        box-sizing: border-box
+    }
+
+    body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font: 14px/1.65 Tahoma, Arial, sans-serif
+    }
+
+    button,
+    input,
+    select {
+        font: inherit
+    }
+
+    button {
+        cursor: pointer;
+        border: 0;
+        background: transparent;
+        color: inherit
+    }
+
+    button:hover {
+        filter: brightness(.94)
+    }
+
+    button:disabled {
+        opacity: .4;
+        cursor: not-allowed
+    }
+
+    button:focus-visible {
+        outline: 3px solid #91bdff;
+        outline-offset: 3px
+    }
+
+    .lab {
+        height: 48px;
+        background: #172942;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 24px;
+        font-size: 12px
+    }
+
+    .lab button {
+        color: white;
+        padding: 5px 12px;
+        border-radius: 6px
+    }
+
+    .lab .chosen {
+        background: #35506e
+    }
+
+    .layout {
+        display: grid;
+        grid-template-columns: 218px 1fr;
+        min-height: calc(100vh - 48px)
+    }
+
+    aside {
+        background: white;
+        border-right: 1px solid var(--line);
+        padding: 30px 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 24px
+    }
+
+    .logo {
+        font-size: 25px;
+        font-weight: bold;
+        letter-spacing: 2px;
+        color: var(--brand)
+    }
+
+    .small {
+        font-size: 12px;
+        color: var(--muted)
+    }
+
+    nav {
+        display: grid;
+        gap: 7px
+    }
+
+    nav button {
+        text-align: left;
+        padding: 12px 16px;
+        border-radius: 10px;
+        color: var(--muted)
+    }
+
+    nav button.active {
+        color: var(--brand);
+        background: var(--soft);
+        font-weight: bold
+    }
+
+    .sidefoot {
+        margin-top: auto;
+        border-top: 1px solid var(--line);
+        padding-top: 20px
+    }
+
+    .topbar {
+        height: 76px;
+        background: #ffffffb8;
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 34px
+    }
+
+    .avatar {
+        background: var(--soft);
+        color: var(--brand);
+        padding: 10px;
+        border-radius: 50%;
+        margin-left: 12px
+    }
+
+    .content {
+        padding: 30px 34px;
+        max-width: 1540px;
+        margin: auto
+    }
+
+    h1 {
+        font-size: 27px;
+        margin: 0 0 4px;
+        letter-spacing: -.7px
+    }
+
+    h2 {
+        font-size: 17px;
+        margin: 0 0 18px
+    }
+
+    h3 {
+        font-size: 15px;
+        margin: 0 0 8px
+    }
+
+    p {
+        margin: 4px 0 14px
+    }
+
+    .head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+        gap: 16px
+    }
+
+    .muted {
+        color: var(--muted)
+    }
+
+    .btn {
+        background: var(--brand);
+        color: white;
+        padding: 11px 20px;
+        border-radius: 9px;
+        font-weight: bold;
+        display: inline-block
+    }
+
+    .secondary {
+        background: var(--soft);
+        color: var(--brand)
+    }
+
+    .white {
+        background: white;
+        color: var(--brand)
+    }
+
+    .grid {
+        display: grid;
+        gap: 20px
+    }
+
+    .stats {
+        grid-template-columns: repeat(4, 1fr);
+        margin-bottom: 24px
+    }
+
+    .card {
+        background: white;
+        border: 1px solid var(--line);
+        border-radius: 15px;
+        padding: 24px;
+        box-shadow: 0 5px 20px #163d6410
+    }
+
+    .stat strong {
+        display: block;
+        font-size: 29px;
+        letter-spacing: -1px;
+        margin: 9px 0
+    }
+
+    .stat .icon {
+        float: right;
+        background: var(--soft);
+        color: var(--brand);
+        padding: 5px 12px;
+        border-radius: 9px
+    }
+
+    .two {
+        grid-template-columns: 1.65fr 1fr;
+        margin-bottom: 24px
+    }
+
+    .badge {
+        padding: 4px 10px;
+        border-radius: 6px;
+        font-size: 12px;
+        white-space: nowrap;
+        background: var(--soft);
+        color: var(--brand)
+    }
+
+    .paid {
+        background: #e6f7ef;
+        color: #168050
+    }
+
+    .pending {
+        background: #fff3d9;
+        color: #a56907
+    }
+
+    .unpaid {
+        background: #ffebed;
+        color: #bc4252
+    }
+
+    .between {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px
+    }
+
+    .row {
+        padding: 14px 0;
+        border-bottom: 1px solid var(--line)
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        text-align: left
+    }
+
+    th {
+        font-size: 12px;
+        color: var(--muted);
+        font-weight: normal;
+        background: #f8fafd
+    }
+
+    td,
+    th {
+        padding: 15px 12px;
+        border-bottom: 1px solid var(--line)
+    }
+
+    .link {
+        color: var(--brand);
+        font-weight: bold
+    }
+
+    .tablewrap {
+        overflow: auto
+    }
+
+    .bars {
+        display: flex;
+        height: 170px;
+        align-items: end;
+        gap: 22px;
+        padding: 15px 10px 0
+    }
+
+    .bar {
+        flex: 1;
+        border-radius: 6px 6px 0 0;
+        background: #cfe5ff;
+        position: relative
+    }
+
+    .bar:last-child {
+        background: var(--brand)
+    }
+
+    .bar span {
+        position: absolute;
+        bottom: -28px;
+        text-align: center;
+        width: 100%;
+        font-size: 11px;
+        color: var(--muted)
+    }
+
+    .chart {
+        padding-bottom: 30px
+    }
+
+    .rooms {
+        grid-template-columns: repeat(4, 1fr)
+    }
+
+    .room {
+        text-align: left;
+        min-height: 130px
+    }
+
+    .room strong {
+        font-size: 25px;
+        display: block;
+        margin-bottom: 8px
+    }
+
+    .filter {
+        display: flex;
+        gap: 8px;
+        margin-bottom: 20px;
+        flex-wrap: wrap
+    }
+
+    .filter button {
+        padding: 8px 17px;
+        border-radius: 8px;
+        background: white;
+        border: 1px solid var(--line)
+    }
+
+    .filter button.active {
+        background: var(--brand);
+        color: white
+    }
+
+    input,
+    select {
+        border: 1px solid var(--line);
+        border-radius: 8px;
+        padding: 10px;
+        background: white;
+        color: var(--ink);
+        max-width: 100%
+    }
+
+    label {
+        display: block;
+        margin: 15px 0 6px;
+        color: var(--muted);
+        font-size: 12px
+    }
+
+    .field {
+        width: 100%
+    }
+
+    .total {
+        border-top: 1px solid var(--line);
+        padding-top: 18px;
+        margin-top: 18px;
+        font-size: 19px;
+        font-weight: bold
+    }
+
+    .bill {
+        max-width: 800px
+    }
+
+    .bill .row:last-child {
+        border: 0
+    }
+
+    .notice {
+        padding: 14px 18px;
+        background: var(--soft);
+        border-radius: 10px;
+        color: var(--brand);
+        margin-bottom: 20px
+    }
+
+    .phone {
+        width: 414px;
+        max-width: 100%;
+        margin: 30px auto;
+        background: var(--bg);
+        border: 1px solid var(--line);
+        border-radius: 28px;
+        overflow: hidden;
+        box-shadow: 0 15px 70px #17294220;
+        min-height: 800px
+    }
+
+    .phone .topbar {
+        padding: 18px 22px;
+        height: 80px
+    }
+
+    .phone .content {
+        padding: 22px 20px
+    }
+
+    .phone h1 {
+        font-size: 24px
+    }
+
+    .phone .card {
+        padding: 20px
+    }
+
+    .phone .hero {
+        background: var(--brand);
+        color: white;
+        border: 0
+    }
+
+    .hero .small {
+        color: #dceaff
+    }
+
+    .hero strong {
+        font-size: 39px;
+        display: block;
+        margin: 12px 0
+    }
+
+    .mobileNav {
+        display: flex;
+        background: white;
+        padding: 13px 8px;
+        border-top: 1px solid var(--line);
+        justify-content: space-around
+    }
+
+    .mobileNav button {
+        padding: 7px;
+        color: var(--muted);
+        font-size: 12px
+    }
+
+    .mobileNav button.active {
+        color: var(--brand);
+        font-weight: bold
+    }
+
+    .phone .grid {
+        gap: 12px
+    }
+
+    .phone .two {
+        grid-template-columns: 1fr 1fr
+    }
+
+    .phone .head {
+        margin-bottom: 17px
+    }
+
+    .phone .row {
+        font-size: 13px
+    }
+
+    .phone .btn {
+        width: 100%;
+        text-align: center;
+        margin-top: 14px
+    }
+
+    .swatch {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 3px solid white;
+        box-shadow: 0 0 0 1px #cad4e2
+    }
+
+    .themes {
+        display: flex;
+        align-items: center;
+        gap: 8px
+    }
+
+    .empty {
+        text-align: center;
+        padding: 70px 20px
+    }
+
+    .login {
+        max-width: 410px;
+        margin: 8vh auto
+    }
+
+    .toast {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #172942;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 12px;
+        z-index: 10
+    }
+
+    .hide {
+        display: none
+    }
+
+    .progress {
+        height: 10px;
+        border-radius: 6px;
+        background: var(--soft);
+        overflow: hidden
+    }
+
+    .progress div {
+        height: 100%;
+        background: var(--brand)
+    }
+
+    .paper {
+        background: #f8fafd;
+        border: 1px dashed #bbcce1;
+        padding: 24px;
+        text-align: center;
+        border-radius: 10px
+    }
+
+    .check {
+        font-size: 45px;
+        color: #168050
+    }
+
+    .caption {
+        font-size: 11px;
+        color: var(--muted);
+        margin-top: 24px
+    }
+
+    svg {
+        width: 100%;
+        height: 180px;
+        overflow: visible
+    }
+
+    @media(max-width:900px) {
+        .layout {
+            grid-template-columns: 175px 1fr
+        }
+
+        .content {
+            padding: 22px
+        }
+
+        .stats {
+            grid-template-columns: repeat(2, 1fr)
+        }
+
+        .two {
+            grid-template-columns: 1fr
+        }
+
+        .rooms {
+            grid-template-columns: repeat(2, 1fr)
+        }
+
+        .lab {
+            padding: 0 10px
+        }
+
+        .lab>span {
+            display: none
+        }
+    }
+
+    @media(max-width:600px) {
+        .layout {
+            display: block
+        }
+
+        aside {
+            padding: 15px;
+            gap: 10px
+        }
+
+        aside nav {
+            display: flex;
+            overflow: auto
+        }
+
+        nav button {
+            white-space: nowrap
+        }
+
+        .sidefoot {
+            display: none
+        }
+
+        .topbar {
+            padding: 0 20px
+        }
+
+        .head {
+            align-items: start
+        }
+
+        .phone {
+            margin: 0 auto;
+            border-radius: 0;
+            box-shadow: none
+        }
+
+        .stats {
+            gap: 10px
+        }
+
+        .card {
+            padding: 18px
+        }
+
+        .stat strong {
+            font-size: 24px
+        }
+
+        .content {
+            padding: 20px 14px
+        }
+    }
+
+    @media print {
+
+        .lab,
+        aside,
+        .topbar,
+        .head,
+        .mobileNav,
+        .btn,
+        .caption {
+            display: none !important
+        }
+
+        .layout {
+            display: block
+        }
+
+        .phone {
+            width: 100%;
+            box-shadow: none;
+            border: 0
+        }
+
+        .card {
+            box-shadow: none
+        }
+    }
+
+    .settings-form {
+        width: 100%
+    }
+
+    .settings-rates {
+        grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    @media(max-width:600px) {
+        .settings-rates {
+            grid-template-columns: 1fr
+        }
+    }
+</style>
+<div class="lab"><span>HORPAK / DESIGN PROTOTYPE · ข้อมูลจำลอง</span>
+    <div><button id="adminTab" onclick="portal('admin')">Admin desktop</button><button id="tenantTab"
+            onclick="portal('tenant')">Tenant mobile</button><button onclick="portal('login')">Login</button></div>
+    <div class="themes"><button class="swatch" aria-label="ธีมฟ้า" style="background:#1677ff"
+            onclick="theme('blue')"></button><button class="swatch" aria-label="ธีมเขียว" style="background:#138b83"
+            onclick="theme('teal')"></button><button class="swatch" aria-label="ธีมม่วง" style="background:#7657d6"
+            onclick="theme('violet')"></button></div>
+</div>
+<div id="app"></div>
+<div id="toast" class="toast hide" role="status"></div>
+<script>
+  let mode = 'admin';
+  let page = 'dashboard';
+  let filter = 'ทั้งหมด';
+  let billStatus = 'unpaid';
+  let selectedRoom = '201';
+  let noRoom = false;
+  let slip = false;
+
+  const money = n => '฿' + n.toLocaleString('th-TH');
+
+  const names = {
+    dashboard: 'ภาพรวม',
+    rooms: 'ห้องพัก',
+    tenants: 'ผู้เช่า',
+    meters: 'จดมิเตอร์',
+    invoices: 'บิลและใบแจ้งหนี้',
+    reports: 'รายงาน',
+    settings: 'ตั้งค่าหอพัก'
+  };
+
+  const badge = s => `
+    <span class="badge ${s}">
+      ${
+        {
+          paid: 'จ่ายแล้ว',
+          pending: 'รอตรวจสอบ',
+          unpaid: 'ยังไม่จ่าย'
+        }[s] || s
+      }
+    </span>
+  `;
+
+  const btn = (t, a, cls = '') => `
+    <button class="btn ${cls}" onclick="${a}">
+      ${t}
+    </button>
+  `;
+
+  const go = p => {
+    page = p;
+    filter = 'ทั้งหมด';
+
+    render();
+    window.scrollTo(0, 0);
+  };
+
+  function portal(m) {
+    mode = m;
+    page = m === 'tenant' ? 'home' : 'dashboard';
+
+    render();
+  }
+
+  function notify(t) {
+    document.getElementById('toast').textContent = t;
+    document.getElementById('toast').classList.remove('hide');
+
+    setTimeout(() => {
+      document.getElementById('toast').classList.add('hide');
+    }, 2600);
+  }
+
+  function theme(t) {
+    let c = {
+      blue: ['#1677ff', '#eaf3ff', '#f2f7fc'],
+      teal: ['#138b83', '#e5f5f1', '#f0f7f5'],
+      violet: ['#7657d6', '#f0ecfc', '#f6f4fb']
+    }[t];
+
+    ['--brand', '--soft', '--bg'].forEach((k, i) => {
+      document.documentElement.style.setProperty(k, c[i]);
+    });
+  }
+
+  function heading(title, sub, action = '') {
+    return `
+      <div class="head">
+        <div>
+          <h1>${title}</h1>
+          <div class="muted">${sub}</div>
+        </div>
+
+        ${action}
+      </div>
+    `;
+  }
+
+  function chart() {
+    return `
+      <svg
+        viewBox="0 0 600 180"
+        aria-label="กราฟรายรับตัวอย่าง 6 เดือน"
+      >
+        <path
+          d="M0 150H600 M0 90H600 M0 30H600"
+          stroke="#e4ecf5"
+          fill="none"
+        />
+
+        <path
+          d="M0 142 C40 140 60 62 110 84 S170 125 220 96 S280 120 330 62 S390 90 450 50 S520 68 600 20 L600 180H0Z"
+          fill="var(--soft)"
+        />
+
+        <path
+          d="M0 142 C40 140 60 62 110 84 S170 125 220 96 S280 120 330 62 S390 90 450 50 S520 68 600 20"
+          fill="none"
+          stroke="var(--brand)"
+          stroke-width="3"
+        />
+      </svg>
+
+      <div class="between small">
+        <span>เม.ย.</span>
+        <span>พ.ค.</span>
+        <span>มิ.ย.</span>
+        <span>ก.ค.</span>
+        <span>ส.ค.</span>
+        <span>ก.ย.</span>
+      </div>
+    `;
+  }
+
+  function lines() {
+    return `
+      <div class="row between">
+        <span>ค่าเช่าห้อง</span>
+        <b>฿3,500</b>
+      </div>
+
+      <div class="row between">
+        <span>ค่าไฟ · 120 หน่วย × ฿8</span>
+        <b>฿960</b>
+      </div>
+
+      <div class="row between">
+        <span>ค่าน้ำ · 5 หน่วย × ฿20</span>
+        <b>฿100</b>
+      </div>
+
+      <div class="row between">
+        <span>อินเทอร์เน็ต</span>
+        <b>฿200</b>
+      </div>
+
+      <div class="total between">
+        <span>ยอดรวม</span>
+        <span>฿4,760</span>
+      </div>
+    `;
+  }
+
+  function invoiceTable() {
+    return `
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr>
+              <th>เลขที่บิล / รอบเดือน</th>
+              <th>ห้อง / ผู้เช่า</th>
+              <th>ยอดชำระ</th>
+              <th>สถานะ</th>
+              <th></th>
+            </tr>
+          </thead>
+
+          <tbody>
+            ${[
+              ['INV-2609-201', '201', 'กิตติ พรดี', 4760, billStatus],
+              ['INV-2609-202', '202', 'มาลี ใจดี', 4320, 'pending'],
+              ['INV-2609-203', '203', 'ธนา สุขใจ', 4580, 'paid'],
+              ['INV-2609-204', '204', 'พิมพ์ชนก ดีใจ', 4620, 'unpaid']
+            ]
+              .filter(r => filter === 'ทั้งหมด' || r[4] === filter)
+              .map(r => `
+                <tr>
+                  <td>
+                    ${r[0]}
+                    <div class="small">กันยายน 2569</div>
+                  </td>
+
+                  <td>${r[1]} · ${r[2]}</td>
+                  <td>${money(r[3])}</td>
+                  <td>${badge(r[4])}</td>
+
+                  <td>
+                    <button
+                      class="link"
+                      onclick="selectedRoom='${r[1]}';go('${r[1] === '201' ? 'bill' : 'sampleBill'}')"
+                    >
+                      ดูบิล ↗
+                    </button>
+                  </td>
+                </tr>
+              `)
+              .join('')}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  function filters(items) {
+    return `
+      <div class="filter">
+        ${items
+          .map(([v, t]) => `
+            <button
+              class="${filter === v ? 'active' : ''}"
+              onclick="filter='${v}';render()"
+            >
+              ${t}
+            </button>
+          `)
+          .join('')}
+      </div>
+    `;
+  }
+
+  function admin() {
+    let body = '';
+
+    if (page === 'dashboard') {
+      body =
+        heading(
+          'ภาพรวมของหอพัก',
+          'ยินดีต้อนรับกลับมา · กันยายน 2569',
+          btn('+ ออกบิลประจำเดือน', "go('meters')")
+        ) +
+        `
+          <div class="grid stats">
+            ${[
+              [
+                'รายรับเดือนนี้',
+                '฿128,450',
+                'รับแล้ว 28 จาก 32 ห้อง',
+                '฿'
+              ],
+              [
+                'ห้องมีผู้เช่า',
+                `${activeRooms().filter(r => r.occupied).length} / ${activeRooms().length}`,
+                `อัตราเข้าพัก ${occupancy()}%`,
+                '⌂'
+              ],
+              [
+                'ยอดค้างชำระ',
+                '฿18,920',
+                '4 ห้องที่ยังไม่ชำระ',
+                '↗'
+              ],
+              [
+                'กำลังตรวจสอบ',
+                '3 รายการ',
+                'ระบบตรวจการชำระอัตโนมัติ',
+                '✓'
+              ]
+            ]
+              .map((r, i) => `
+                <button
+                  class="card stat"
+                  style="text-align:left"
+                  onclick="go('${['reports', 'rooms', 'invoices', 'invoices'][i]}')"
+                >
+                  <span class="icon">${r[3]}</span>
+                  <span class="muted">${r[0]}</span>
+                  <strong>${r[1]}</strong>
+                  <span class="small">${r[2]}</span>
+                </button>
+              `)
+              .join('')}
+          </div>
+
+          <div class="grid two">
+            <section class="card">
+              <div class="between">
+                <h2>รายรับย้อนหลัง</h2>
+                <span class="small">6 เดือนล่าสุด · บาท</span>
+              </div>
+
+              ${chart()}
+            </section>
+
+            <section class="card">
+              <h2>สถานะห้องพัก</h2>
+
+              <strong style="font-size:38px">
+                ${occupancy()}<span class="muted" style="font-size:20px">%</span>
+              </strong>
+
+              <div class="progress">
+                <div style="width:${occupancy()}%"></div>
+              </div>
+
+              <div class="row between">
+                <span>มีผู้เช่า</span>
+                <b>${activeRooms().filter(r => r.occupied).length} ห้อง</b>
+              </div>
+
+              <div class="row between">
+                <span>ห้องว่าง</span>
+                <b>${activeRooms().filter(r => !r.occupied).length} ห้อง</b>
+              </div>
+
+              <div class="between">
+                <span>ห้องทั้งหมด</span>
+                <b>${activeRooms().length} ห้อง</b>
+              </div>
+            </section>
+          </div>
+
+          <section class="card">
+            <div class="between">
+              <h2>บิลล่าสุด</h2>
+
+              <button class="link" onclick="go('invoices')">
+                ดูทั้งหมด →
+              </button>
+            </div>
+
+            ${invoiceTable()}
+          </section>
+        `;
+    }
+
+    if (page === 'rooms') {
+      body =
+        heading(
+          'ห้องพัก',
+          `ทั้งหมด ${activeRooms().length} ห้อง`,
+          btn('จัดการห้องพัก', "go('settings')", 'secondary')
+        ) +
+        filters([
+          ['ทั้งหมด', 'ทุกห้อง'],
+          ['occupied', 'มีผู้เช่า'],
+          ['vacant', 'ห้องว่าง']
+        ]) +
+        `
+          <div class="grid rooms">
+            ${
+              activeRooms()
+                .filter(r =>
+                  filter === 'ทั้งหมด' ||
+                  (filter === 'occupied') === r.occupied
+                )
+                .map(r => `
+                  <button
+                    class="card room"
+                    onclick="selectedRoom='${r.id}';go('room')"
+                  >
+                    <div class="between">
+                      <strong>${esc(r.code)}</strong>
+
+                      <span class="badge ${r.occupied ? 'paid' : ''}">
+                        ${r.occupied ? 'มีผู้เช่า' : 'ห้องว่าง'}
+                      </span>
+                    </div>
+
+                    <div class="muted">
+                      ${esc(r.type)} · ${esc(r.cooling)}
+                    </div>
+
+                    <div>
+                      ${money(r.rent)}
+                      <span class="small">/ เดือน</span>
+                    </div>
+                  </button>
+                `)
+                .join('') ||
+              '<div class="card">ไม่มีห้องในรายการ</div>'
+            }
+          </div>
+        `;
+    }
+
+    if (page === 'types') {
+      body =
+        heading(
+          'ประเภทห้อง',
+          'สรุปจากห้องพักที่ตั้งค่าไว้',
+          btn('จัดการห้องพัก', "go('settings')", 'secondary')
+        ) +
+        `
+          <div class="grid two">
+            ${[...new Set(activeRooms().map(r => r.type))]
+              .map(t => `
+                <div class="card">
+                  <h2>${esc(t)}</h2>
+                  <p>${activeRooms().filter(r => r.type === t).length} ห้อง</p>
+                </div>
+              `)
+              .join('')}
+          </div>
+        `;
+    }
+
+    if (page === 'room') {
+      const r = roomData[selectedRoom];
+
+      body =
+        heading(
+          'ห้อง ' + esc(r.code),
+          `ชั้น ${r.floor} · ${esc(r.type)}`,
+          btn('← ห้องพัก', "go('rooms')", 'secondary')
+        ) +
+        `
+          <div class="grid two">
+            <section class="card">
+              <h2>รายละเอียดห้อง</h2>
+
+              <div class="row between">
+                <span>ค่าเช่า</span>
+                <b>${money(r.rent)} / เดือน</b>
+              </div>
+
+              <div class="row between">
+                <span>ขนาด</span>
+                <b>${r.area} ตร.ม.</b>
+              </div>
+
+              <div class="row between">
+                <span>อุปกรณ์</span>
+                <b>${esc(r.cooling)}</b>
+              </div>
+
+              ${btn('แก้ไขห้อง', `editRoom('${r.id}')`, 'secondary')}
+            </section>
+
+            <section class="card">
+              <h2>${r.occupied ? 'ข้อมูลผู้เช่า' : 'ห้องว่างพร้อมเข้าพัก'}</h2>
+
+              <p>
+                ${
+                  r.occupied
+                    ? (
+                        registeredTenants.find(u => u.roomId === r.id)
+                          ? esc(
+                              registeredTenants.find(u => u.roomId === r.id).name
+                            )
+                          : r.id === '201'
+                            ? 'กิตติ พรดี'
+                            : 'ผู้เช่าตัวอย่าง ห้อง ' + esc(r.code)
+                      )
+                    : 'ยังไม่มีผู้เช่า'
+                }
+              </p>
+
+              <p class="muted">
+                ${
+                  registeredTenants.find(u => u.roomId === r.id)
+                    ? 'วันที่เข้าอยู่ ' +
+                      esc(
+                        registeredTenants.find(u => u.roomId === r.id).moveIn
+                      )
+                    : r.occupied
+                      ? 'เริ่มสัญญา 1 เม.ย. 2569 · สิ้นสุด 31 มี.ค. 2570'
+                      : ''
+                }
+              </p>
+
+              ${
+                r.occupied
+                  ? (
+                      registeredTenants.some(u => u.roomId === r.id)
+                        ? '<p class="small">ยังไม่มีบิลสำหรับการเข้าพักนี้</p>'
+                        : btn(
+                            'ดูบิลของห้อง',
+                            `go('${r.id === '201' ? 'bill' : 'sampleBill'}')`
+                          )
+                    )
+                  : btn('เพิ่มผู้เช่า', "go('addTenant')")
+              }
+            </section>
+          </div>
+        `;
+    }
+
+    if (page === 'tenants') {
+      body =
+        heading(
+          'ผู้เช่า',
+          'ข้อมูลการเข้าพักและประวัติสัญญา',
+          btn('+ เพิ่มผู้เช่า', "go('addTenant')")
+        ) +
+        `
+          <div class="card tablewrap">
+            <table>
+              <tr>
+                <th>ชื่อผู้เช่า</th>
+                <th>ห้อง</th>
+                <th>วันที่เข้าอยู่</th>
+                <th>สถานะ</th>
+                <th></th>
+              </tr>
+
+              ${[
+                'กิตติ พรดี',
+                'มาลี ใจดี',
+                'ธนา สุขใจ',
+                'พิมพ์ชนก ดีใจ'
+              ]
+                .map((n, i) => `
+                  <tr>
+                    <td>${n}</td>
+                    <td>${201 + i}</td>
+                    <td>1 เม.ย. 2569</td>
+
+                    <td>
+                      <span class="badge paid">กำลังพักอาศัย</span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="link"
+                        onclick="selectedRoom='${201 + i}';go('room')"
+                      >
+                        รายละเอียด
+                      </button>
+                    </td>
+                  </tr>
+                `)
+                .join('')}
+
+              ${registeredTenants
+                .filter(u => u.roomId !== null)
+                .map(u => `
+                  <tr>
+                    <td>
+                      ${esc(u.name)}
+                      <div class="small">@${esc(u.username)}</div>
+                    </td>
+
+                    <td>${esc(roomData[u.roomId].code)}</td>
+                    <td>${esc(u.moveIn)}</td>
+
+                    <td>
+                      <span class="badge paid">กำลังพักอาศัย</span>
+                    </td>
+
+                    <td>
+                      <button
+                        class="link"
+                        onclick="selectedRoom='${u.roomId}';go('room')"
+                      >
+                        รายละเอียด
+                      </button>
+                    </td>
+                  </tr>
+                `)
+                .join('')}
+            </table>
+          </div>
+        `;
+    }
+
+    if (page === 'addTenant') {
+      const users = registeredTenants.filter(u => u.roomId === null);
+      const rooms = activeRooms().filter(r => !r.occupied);
+
+      body =
+        heading(
+          'เพิ่มผู้เช่า',
+          'เลือกบัญชีที่สมัครเข้ามาแล้วเพื่อผูกกับห้องพัก'
+        ) +
+        `
+          <form
+            class="card bill"
+            onsubmit="event.preventDefault();assignTenant()"
+          >
+            <h2>ข้อมูลการเข้าพัก</h2>
+
+            <label for="tenantAccount">บัญชีผู้เช่า</label>
+
+            <select
+              id="tenantAccount"
+              class="field"
+              required
+              onchange="showTenantContact()"
+            >
+              <option value="">เลือกผู้เช่าที่สมัครเข้ามาแล้ว</option>
+
+              ${users
+                .map(u => `
+                  <option value="${u.id}">
+                    ${esc(u.name)} · @${esc(u.username)}
+                  </option>
+                `)
+                .join('')}
+            </select>
+
+            <p class="small">
+              ${
+                users.length
+                  ? 'แสดงบัญชีผู้เช่าที่ยังไม่ได้ผูกห้อง · ใช้ชื่อผู้ใช้แยกกรณีชื่อซ้ำ'
+                  : 'ยังไม่มีบัญชีผู้เช่าที่รอผูกห้อง'
+              }
+            </p>
+
+            <label>เบอร์โทรจากบัญชี</label>
+
+            <input
+              id="tenantContact"
+              class="field"
+              readonly
+              placeholder="เลือกบัญชีเพื่อดูข้อมูล"
+            >
+
+            <label for="tenantRoom">ห้องพัก</label>
+
+            <select id="tenantRoom" class="field" required>
+              <option value="">เลือกห้องว่าง</option>
+
+              ${rooms
+                .map(r => `
+                  <option
+                    value="${r.id}"
+                    ${r.id === selectedRoom ? 'selected' : ''}
+                  >
+                    ${esc(r.code)} · ${esc(r.type)} · ${money(r.rent)}
+                  </option>
+                `)
+                .join('')}
+            </select>
+
+            ${
+              rooms.length
+                ? ''
+                : '<p class="small">ไม่มีห้องว่าง กรุณาเพิ่มห้องในตั้งค่าหอพัก</p>'
+            }
+
+            <label for="tenantMoveIn">วันที่เข้าอยู่</label>
+
+            <input
+              id="tenantMoveIn"
+              type="date"
+              class="field"
+              required
+            >
+
+            <div style="margin-top:24px">
+              <button
+                class="btn"
+                type="submit"
+                ${!users.length || !rooms.length ? 'disabled' : ''}
+              >
+                บันทึกการเข้าพัก
+              </button>
+
+              ${btn('ยกเลิก', "go('tenants')", 'secondary')}
+            </div>
+
+            <p class="caption">
+              บัญชีในรายการเป็นข้อมูลสมัครตัวอย่าง · การผูกห้องไม่สร้างบัญชีใหม่
+            </p>
+          </form>
+        `;
+    }
+
+    if (page === 'meters') {
+      body =
+        heading(
+          'จดมิเตอร์',
+          'รอบบิล กันยายน 2569 · เลือกห้องก่อนบันทึกมิเตอร์'
+        ) +
+        `
+          <div class="notice">
+            บันทึกแล้ว
+            ${activeRooms().filter(r => meterRecords[r.id]?.saved).length}
+            / ${activeRooms().length} ห้อง
+            · เลือกห้องเพื่อจดค่าน้ำและค่าไฟ
+          </div>
+        ` +
+        filters([
+          ['ทั้งหมด', 'ทุกห้อง'],
+          ['todo', 'ยังไม่บันทึก'],
+          ['done', 'บันทึกแล้ว']
+        ]) +
+        `
+          <div class="grid rooms">
+            ${
+              Object.entries(meterRecords)
+                .filter(([id]) => !roomData[id].deleted)
+                .filter(([id, r]) =>
+                  filter === 'ทั้งหมด' ||
+                  (filter === 'done' ? r.saved : !r.saved)
+                )
+                .map(([id, r]) => `
+                  <button
+                    class="card room"
+                    onclick="selectedRoom='${id}';go('meterEntry')"
+                  >
+                    <div class="between">
+                      <strong>${esc(roomData[id].code)}</strong>
+
+                      <span class="badge ${r.saved ? 'paid' : 'pending'}">
+                        ${r.saved ? 'บันทึกแล้ว' : 'ยังไม่บันทึก'}
+                      </span>
+                    </div>
+
+                    <div class="small">
+                      ชั้น ${roomData[id].floor}
+                      · ${roomData[id].occupied ? 'มีผู้เช่า' : 'ห้องว่าง'}
+                    </div>
+
+                    <div class="small">
+                      ครั้งก่อน: ไฟ ${r.prevE} · น้ำ ${r.prevW}
+                    </div>
+
+                    <div class="link" style="margin-top:12px">
+                      ${r.saved ? 'ดู / แก้ไขมิเตอร์' : 'จดมิเตอร์'} →
+                    </div>
+                  </button>
+                `)
+                .join('') ||
+              '<div class="card">ไม่มีห้องในสถานะนี้</div>'
+            }
+          </div>
+        `;
+    }
+
+    if (page === 'meterEntry') {
+      const r = meterRecords[selectedRoom];
+
+      body =
+        heading(
+          'จดมิเตอร์ · ห้อง ' + esc(roomData[selectedRoom].code),
+          'รอบบิล กันยายน 2569',
+          btn('← เลือกห้อง', "go('meters')", 'secondary')
+        ) +
+        `
+          <section class="card">
+            <h2>ค่าน้ำและค่าไฟ · ห้อง ${esc(roomData[selectedRoom].code)}</h2>
+
+            <div class="grid two">
+              <div>
+                <label>เลขมิเตอร์ไฟครั้งก่อน</label>
+
+                <input
+                  class="field"
+                  value="${r.prevE}"
+                  readonly
+                >
+
+                <label>เลขมิเตอร์ไฟครั้งนี้</label>
+
+                <input
+                  id="electric"
+                  class="field"
+                  type="number"
+                  min="${r.prevE}"
+                  step="1"
+                  value="${r.e ?? ''}"
+                  placeholder="กรอกเลขมิเตอร์ไฟ"
+                  oninput="calc()"
+                >
+              </div>
+
+              <div>
+                <label>เลขมิเตอร์น้ำครั้งก่อน</label>
+
+                <input
+                  class="field"
+                  value="${r.prevW}"
+                  readonly
+                >
+
+                <label>เลขมิเตอร์น้ำครั้งนี้</label>
+
+                <input
+                  id="water"
+                  class="field"
+                  type="number"
+                  min="${r.prevW}"
+                  step="1"
+                  value="${r.w ?? ''}"
+                  placeholder="กรอกเลขมิเตอร์น้ำ"
+                  oninput="calc()"
+                >
+              </div>
+            </div>
+
+            <div id="calc" class="notice">
+              ${
+                r.saved
+                  ? `ไฟ ${r.e - r.prevE} หน่วย = ${money((r.e - r.prevE) * 8)} · น้ำ ${r.w - r.prevW} หน่วย = ${money((r.w - r.prevW) * 20)}`
+                  : 'กรอกเลขมิเตอร์ทั้งสองช่องเพื่อคำนวณยอด'
+              }
+            </div>
+
+            ${btn('บันทึกแล้วกลับหน้าเลือกห้อง', 'saveMeter()')}
+
+            <p class="caption">
+              บันทึกแยกแต่ละห้องในต้นแบบระหว่างเปิดไฟล์นี้
+              · รีโหลดแล้วข้อมูลจะเริ่มใหม่
+              · ไม่เปลี่ยนบิลตัวอย่าง
+            </p>
+          </section>
+        `;
+    }
+
+    if (page === 'invoices') {
+      body =
+        heading(
+          'บิลและใบแจ้งหนี้',
+          'ติดตามยอดชำระแต่ละห้อง',
+          btn('ดูตัวอย่างบิลใหม่', "selectedRoom='201';go('bill')")
+        ) +
+        filters([
+          ['ทั้งหมด', 'ทั้งหมด'],
+          ['unpaid', 'ยังไม่จ่าย'],
+          ['pending', 'รอตรวจสอบ'],
+          ['paid', 'จ่ายแล้ว']
+        ]) +
+        `
+          <section class="card">
+            ${invoiceTable()}
+          </section>
+        `;
+    }
+
+    if (page === 'bill' || page === 'sampleBill') {
+      let demo = page === 'sampleBill';
+      let sum = {
+        202: 4320,
+        203: 4580,
+        204: 4620
+      }[selectedRoom] || 4760;
+
+      body =
+        heading(
+          'ใบแจ้งหนี้',
+          'INV-2609-' + selectedRoom,
+          btn('← รายการบิล', "go('invoices')", 'secondary')
+        ) +
+        `
+          <section class="card bill">
+            <div class="between">
+              <div>
+                <h2>HORPAK Residence</h2>
+                <p>ห้อง ${selectedRoom} · กันยายน 2569</p>
+              </div>
+
+              ${badge(
+                demo
+                  ? (
+                      selectedRoom === '203'
+                        ? 'paid'
+                        : selectedRoom === '202'
+                          ? 'pending'
+                          : 'unpaid'
+                    )
+                  : billStatus
+              )}
+            </div>
+
+            <div class="notice">
+              กำหนดชำระ 5 ตุลาคม 2569
+            </div>
+
+            ${
+              demo
+                ? `
+                    <div class="total between">
+                      <span>ยอดบิลตัวอย่าง</span>
+                      <span>${money(sum)}</span>
+                    </div>
+                  `
+                : lines()
+            }
+
+            <div style="margin-top:25px">
+              ${btn('พิมพ์ใบแจ้งหนี้', 'window.print()', 'secondary')}
+            </div>
+          </section>
+        `;
+    }
+
+    if (page === 'receipt') {
+      body =
+        heading('ใบเสร็จรับเงิน', 'RC-2609-201') +
+        `
+          <section class="card bill">
+            <h2>HORPAK Residence</h2>
+
+            ${badge('paid')}
+
+            <p>ได้รับเงินจาก กิตติ พรดี · ห้อง 201</p>
+
+            ${lines()}
+
+            <p class="caption">
+              เอกสารตัวอย่าง ไม่มีผลเป็นหลักฐานการชำระเงินจริง
+            </p>
+
+            ${btn('พิมพ์ใบเสร็จ', 'window.print()', 'secondary')}
+          </section>
+        `;
+    }
+
+    if (page === 'reports') {
+      body =
+        heading(
+          'รายงานรายรับ',
+          'สรุปข้อมูลจำลอง · กันยายน 2569',
+          btn('พิมพ์รายงาน', 'window.print()', 'secondary')
+        ) +
+        `
+          <div class="grid stats">
+            ${[
+              ['รายรับแล้ว', '฿128,450'],
+              ['ค้างชำระ', '฿18,920'],
+              ['ห้องที่ชำระแล้ว', '28 ห้อง'],
+              ['อัตราเข้าพัก', occupancy() + '%']
+            ]
+              .map(r => `
+                <div class="card stat">
+                  <span class="muted">${r[0]}</span>
+                  <strong>${r[1]}</strong>
+                </div>
+              `)
+              .join('')}
+          </div>
+
+          <div class="card">
+            <h2>แนวโน้มรายรับ</h2>
+            ${chart()}
+          </div>
+        `;
+    }
+
+    if (page === 'settings') {
+      body =
+        heading('ตั้งค่าหอพัก', 'ข้อมูลทั่วไปและอัตราค่าบริการ') +
+        `
+          <form
+            class="card settings-form"
+            onsubmit="event.preventDefault();notify('บันทึกการตั้งค่าตัวอย่างแล้ว')"
+          >
+            <label>ชื่อหอพัก</label>
+
+            <input
+              class="field"
+              value="HORPAK Residence"
+              required
+            >
+
+            <div class="grid two settings-rates">
+              <div>
+                <label>ค่าไฟ / หน่วย</label>
+
+                <input
+                  class="field"
+                  type="number"
+                  value="8"
+                  min="0"
+                  required
+                >
+              </div>
+
+              <div>
+                <label>ค่าน้ำ / หน่วย</label>
+
+                <input
+                  class="field"
+                  type="number"
+                  value="20"
+                  min="0"
+                  required
+                >
+              </div>
+            </div>
+
+            <label>อินเทอร์เน็ต / เดือน</label>
+
+            <input
+              class="field"
+              type="number"
+              value="200"
+              min="0"
+              required
+            >
+
+            <p class="caption">
+              ใช้ทดสอบแบบฟอร์มเท่านั้น ไม่เปลี่ยนบิลตัวอย่าง
+            </p>
+
+            <button class="btn">บันทึกตัวอย่าง</button>
+          </form>
+        ` +
+        roomSettings();
+    }
+
+    if (page === 'roomEdit') {
+      body = roomEditor();
+    }
+
+    return `
+      <div class="layout">
+        <aside>
+          <div>
+            <div class="logo">
+              HORPAK<span style="color:#a2caff">.</span>
+            </div>
+
+            <div class="small">
+              จัดการหอพัก ให้เป็นเรื่องง่าย
+            </div>
+          </div>
+
+          <nav>
+            ${Object.entries(names)
+              .map(([k, n]) => `
+                <button
+                  class="${page === k ? 'active' : ''}"
+                  onclick="go('${k}')"
+                >
+                  ${n}
+                </button>
+              `)
+              .join('')}
+          </nav>
+
+          <div class="sidefoot">
+            <b>HORPAK Residence</b>
+            <div class="small">ผู้ดูแลระบบ</div>
+
+            <button class="link" onclick="portal('login')">
+              ออกจากระบบ
+            </button>
+          </div>
+        </aside>
+
+        <main>
+          <header class="topbar">
+            <span class="muted">
+              พื้นที่ผู้ดูแล / ${names[page] || 'รายละเอียด'}
+            </span>
+
+            <div>
+              สวัสดี, แอดมิน
+              <span class="avatar">AD</span>
+            </div>
+          </header>
+
+          <div class="content">
+            ${body}
+
+            <p class="caption">
+              DESIGN PROTOTYPE · ข้อมูลทั้งหมดเป็นตัวอย่าง
+              · ใช้เมนูด้านบนเพื่อทดลองสลับบทบาท
+            </p>
+          </div>
+        </main>
+      </div>
+    `;
+  }
+
+  function tenant() {
+    let body = '';
+
+    if (page === 'home') {
+      body =
+        heading('สวัสดี, กิตติ 👋', 'ยินดีต้อนรับสู่ห้องของคุณ') +
+        (
+          noRoom
+            ? `
+                <div class="card empty">
+                  <h2>ยังไม่ได้ผูกห้องพัก</h2>
+
+                  <p class="muted">
+                    ติดต่อผู้ดูแลหอเพื่อเชื่อมบัญชีกับห้องพัก
+                  </p>
+
+                  ${btn(
+                    'แสดงห้องตัวอย่าง',
+                    'noRoom=false;render()',
+                    'secondary'
+                  )}
+                </div>
+              `
+            : `
+                <div class="card hero">
+                  <div class="between">
+                    <span>ยอดบิลเดือนกันยายน</span>
+                    <span>ห้อง 201</span>
+                  </div>
+
+                  <strong>฿4,760</strong>
+
+                  <div class="small">
+                    ${
+                      billStatus === 'paid'
+                        ? 'ชำระเรียบร้อยแล้ว'
+                        : billStatus === 'pending'
+                          ? 'ส่งหลักฐานแล้ว · รอผลตรวจสอบอัตโนมัติ'
+                          : 'ครบกำหนด 5 ตุลาคม 2569'
+                    }
+                  </div>
+
+                  ${btn(
+                    billStatus === 'paid' ? 'ดูใบเสร็จ' : 'ดูรายละเอียดบิล',
+                    `go('${billStatus === 'paid' ? 'receipt' : 'bill'}')`,
+                    'white'
+                  )}
+                </div>
+
+                <div class="grid two" style="margin-top:16px">
+                  <button
+                    class="card"
+                    style="text-align:left"
+                    onclick="go('electric')"
+                  >
+                    <div class="muted">ค่าไฟเดือนนี้</div>
+                    <h2 style="margin:8px 0">฿960</h2>
+                    <span class="small">120 หน่วย →</span>
+                  </button>
+
+                  <button
+                    class="card"
+                    style="text-align:left"
+                    onclick="go('room')"
+                  >
+                    <div class="muted">ห้องของฉัน</div>
+                    <h2 style="margin:8px 0">201</h2>
+                    <span class="small">Standard →</span>
+                  </button>
+                </div>
+
+                <div class="card">
+                  <div class="between">
+                    <h2>บิลย้อนหลัง</h2>
+
+                    <button class="link" onclick="go('bills')">
+                      ทั้งหมด
+                    </button>
+                  </div>
+
+                  <button
+                    style="width:100%;text-align:left"
+                    onclick="go('oldReceipt')"
+                  >
+                    <div class="between">
+                      <span>สิงหาคม 2569</span>
+                      ${badge('paid')}
+                    </div>
+
+                    <strong>฿4,520</strong>
+                  </button>
+                </div>
+              `
+        ) +
+        `
+          <button
+            class="small"
+            style="margin-top:18px"
+            onclick="noRoom=!noRoom;render()"
+          >
+            ทดลองสถานะ: ${noRoom ? 'มีห้องพัก' : 'ยังไม่ได้ผูกห้อง'}
+          </button>
+        `;
+    }
+
+    if (page === 'bills') {
+      body =
+        heading('บิลของฉัน', 'ค่าใช้จ่ายและประวัติการชำระ') +
+        filters([
+          ['ทั้งหมด', 'ทั้งหมด'],
+          ['unpaid', 'ยังไม่จ่าย'],
+          ['pending', 'รอตรวจ'],
+          ['paid', 'จ่ายแล้ว']
+        ]) +
+        [
+          ['กันยายน', 4760, billStatus, 'bill'],
+          ['สิงหาคม', 4520, 'paid', 'oldReceipt'],
+          ['กรกฎาคม', 4680, 'paid', 'julyReceipt']
+        ]
+          .filter(r => filter === 'ทั้งหมด' || filter === r[2])
+          .map(r => `
+            <button
+              class="card"
+              style="text-align:left;width:100%;margin-bottom:12px"
+              onclick="go('${r[3]}')"
+            >
+              <div class="between">
+                <b>${r[0]} 2569</b>
+                ${badge(r[2])}
+              </div>
+
+              <h2 style="margin:15px 0 0">
+                ${money(r[1])}
+                <span class="link" style="float:right">→</span>
+              </h2>
+            </button>
+          `)
+          .join('');
+    }
+
+    if (page === 'bill') {
+      body =
+        heading('รายละเอียดบิล', 'INV-2609-201') +
+        `
+          <section class="card">
+            <div class="between">
+              <b>กันยายน 2569</b>
+              ${badge(billStatus)}
+            </div>
+
+            <p class="small">
+              ห้อง 201 · ครบกำหนด 5 ต.ค. 2569
+            </p>
+
+            ${lines()}
+
+            ${btn(
+              billStatus === 'unpaid'
+                ? 'แจ้งชำระเงิน'
+                : billStatus === 'pending'
+                  ? 'ดูสถานะการตรวจ'
+                  : 'ดูใบเสร็จ',
+              `go('${
+                billStatus === 'unpaid'
+                  ? 'pay'
+                  : billStatus === 'pending'
+                    ? 'submitted'
+                    : 'receipt'
+              }')`
+            )}
+          </section>
+
+          ${btn('← บิลทั้งหมด', "go('bills')", 'secondary')}
+        `;
+    }
+
+    if (page === 'electric') {
+      body =
+        heading('ค่าไฟของฉัน', 'กันยายน 2569 · ห้อง 201') +
+        `
+          <div class="card">
+            <span class="muted">ค่าไฟเดือนนี้</span>
+            <h1 style="font-size:36px">฿960</h1>
+            <p class="muted">120 หน่วย × ฿8 / หน่วย</p>
+
+            <div class="row between">
+              <span>มิเตอร์ก่อน</span>
+              <b>1,240</b>
+            </div>
+
+            <div class="row between">
+              <span>มิเตอร์ปัจจุบัน</span>
+              <b>1,360</b>
+            </div>
+
+            <div class="row between">
+              <span>จดล่าสุด</span>
+              <b>25 ก.ย. 2569</b>
+            </div>
+          </div>
+
+          <div class="card chart" style="margin-top:14px">
+            <h2>การใช้ไฟย้อนหลัง · หน่วย</h2>
+
+            <div class="bars">
+              ${[85, 100, 130, 110, 90, 120]
+                .map((v, i) => `
+                  <div class="bar" style="height:${v}px">
+                    <span>
+                      ${['เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.'][i]}
+                    </span>
+                  </div>
+                `)
+                .join('')}
+            </div>
+
+            <p class="caption">
+              เดือนนี้เพิ่มขึ้น 30 หน่วยจากเดือนก่อน
+            </p>
+          </div>
+
+          ${btn('ดูบิลเดือนนี้', "go('bill')")}
+        `;
+    }
+
+    if (page === 'pay') {
+      body =
+        heading('แจ้งชำระเงิน', 'บิลเดือนกันยายน 2569') +
+        `
+          <form
+            class="card"
+            onsubmit="event.preventDefault();billStatus='pending';go('submitted')"
+          >
+            <h2>ยอดชำระ ฿4,760</h2>
+
+            <div class="notice">
+              บัญชีธนาคารตัวอย่าง<br>
+              <b>XXX-X-XXXXX-X</b><br>
+              HORPAK Residence<br>
+
+              <span class="small">
+                ต้นแบบเท่านั้น — ไม่ต้องโอนเงินจริง
+              </span>
+            </div>
+
+            <label>หลักฐานการชำระ</label>
+
+            <div class="paper">
+              <input
+                aria-label="แนบสลิป"
+                type="file"
+                accept="image/*"
+                onchange="slip=true;notify('เลือกไฟล์แล้ว · ไม่ได้อัปโหลดออกจากเครื่อง')"
+              >
+
+              <div class="small">ภาพ JPG หรือ PNG</div>
+            </div>
+
+            <label>วันที่โอน (ตัวอย่าง)</label>
+
+            <input
+              type="date"
+              class="field"
+              value="2026-09-25"
+              required
+            >
+
+            <button type="submit" class="btn">
+              ทดลองส่งหลักฐาน
+            </button>
+
+            <p class="caption">
+              ปุ่มนี้จำลองการส่งสลิป ไม่อัปโหลดไฟล์จริง
+            </p>
+          </form>
+        `;
+    }
+
+    if (page === 'submitted') {
+      body = `
+        <div class="card empty">
+          <h1>
+            ${
+              billStatus === 'paid'
+                ? 'ชำระเรียบร้อยแล้ว'
+                : billStatus === 'unpaid'
+                  ? 'ตรวจสอบไม่สำเร็จ'
+                  : 'กำลังตรวจสอบการชำระ'
+            }
+          </h1>
+
+          <p class="muted">
+            ${
+              billStatus === 'paid'
+                ? 'ระบบยืนยันการชำระแล้ว ดูใบเสร็จได้ทันที'
+                : billStatus === 'unpaid'
+                  ? 'กรุณาตรวจสอบหลักฐานและส่งใหม่อีกครั้ง'
+                  : 'ส่งหลักฐานแล้ว ระบบกำลังตรวจสอบอัตโนมัติ<br>เมื่อสำเร็จจะออกใบเสร็จให้'
+            }
+          </p>
+
+          ${badge(billStatus)}
+
+          ${btn(
+            billStatus === 'paid'
+              ? 'ดูใบเสร็จ'
+              : billStatus === 'unpaid'
+                ? 'ส่งหลักฐานใหม่'
+                : 'กลับหน้าหลัก',
+            `go('${
+              billStatus === 'paid'
+                ? 'receipt'
+                : billStatus === 'unpaid'
+                  ? 'pay'
+                  : 'home'
+            }')`
+          )}
+
+          ${
+            billStatus === 'pending'
+              ? `
+                  <div class="paper" style="margin-top:25px">
+                    <span class="small">
+                      เฉพาะต้นแบบ: จำลองผลจาก third-party<br>
+                      ยังไม่ได้เชื่อมต่อผู้ให้บริการจริง
+                    </span>
+
+                    ${btn(
+                      'จำลองผล: ผ่าน',
+                      "billStatus='paid';render()",
+                      'secondary'
+                    )}
+
+                    ${btn(
+                      'จำลองผล: ไม่ผ่าน',
+                      "billStatus='unpaid';render()",
+                      'secondary'
+                    )}
+                  </div>
+                `
+              : ''
+          }
+        </div>
+      `;
+    }
+
+    if (['receipt', 'oldReceipt', 'julyReceipt'].includes(page)) {
+      let current = page === 'receipt';
+      let july = page === 'julyReceipt';
+
+      body =
+        heading(
+          'ใบเสร็จรับเงิน',
+          current
+            ? 'RC-2609-201'
+            : july
+              ? 'RC-2607-201'
+              : 'RC-2608-201'
+        ) +
+        `
+          <div class="card">
+            <div class="check">✓</div>
+            <h2>ชำระเรียบร้อยแล้ว</h2>
+
+            <p>
+              ห้อง 201 ·
+              ${current ? 'กันยายน' : july ? 'กรกฎาคม' : 'สิงหาคม'}
+              2569
+            </p>
+
+            ${
+              current
+                ? lines()
+                : `
+                    <div class="total between">
+                      <span>ยอดชำระ</span>
+                      <b>${july ? '฿4,680' : '฿4,520'}</b>
+                    </div>
+                  `
+            }
+
+            <p class="caption">
+              เอกสารตัวอย่าง ไม่มีผลเป็นหลักฐานการชำระเงินจริง
+            </p>
+
+            ${btn('พิมพ์ / บันทึก PDF', 'window.print()', 'secondary')}
+          </div>
+        `;
+    }
+
+    if (page === 'room') {
+      body =
+        heading('ห้องของฉัน', 'HORPAK Residence') +
+        `
+          <div class="card">
+            <div class="between">
+              <h1>${esc(roomData[201].code)}</h1>
+              <span class="badge paid">กำลังพักอาศัย</span>
+            </div>
+
+            <p class="muted">
+              ${esc(roomData[201].type)}
+              · ชั้น ${roomData[201].floor}
+              · ${roomData[201].area} ตร.ม.
+            </p>
+
+            <div class="row between">
+              <span>ค่าเช่า</span>
+              <b>${money(roomData[201].rent)} / เดือน</b>
+            </div>
+
+            <div class="row between">
+              <span>เงินประกัน</span>
+              <b>฿7,000</b>
+            </div>
+
+            <div class="row between">
+              <span>เริ่มสัญญา</span>
+              <b>1 เม.ย. 2569</b>
+            </div>
+
+            <div class="row between">
+              <span>สิ้นสุดสัญญา</span>
+              <b>31 มี.ค. 2570</b>
+            </div>
+
+            <label>ผู้พักอาศัย</label>
+            <p>กิตติ พรดี · ผู้เช่าหลัก</p>
+            <p class="small">ไม่มีผู้พักร่วม</p>
+
+            <label>สิ่งอำนวยความสะดวก</label>
+
+            <p>
+              ${esc(roomData[201].cooling)}
+              · เตียง 5 ฟุต · ตู้เสื้อผ้า<br>
+              ห้องน้ำในตัว · อินเทอร์เน็ต
+            </p>
+          </div>
+        `;
+    }
+
+    if (noRoom && page !== 'home') {
+      body =
+        heading('ยังไม่มีข้อมูลห้อง', 'บัญชีนี้ยังไม่ได้ผูกห้องพัก') +
+        `
+          <div class="card empty">
+            <p>
+              ติดต่อผู้ดูแลเพื่อเชื่อมห้องก่อนดูบิลและมิเตอร์
+            </p>
+
+            ${btn('กลับหน้าหลัก', "go('home')")}
+          </div>
+        `;
+    }
+
+    return `
+      <div class="phone">
+        <header class="topbar">
+          <div class="logo" style="font-size:21px">HORPAK.</div>
+
+          <button class="small" onclick="portal('login')">
+            ออกจากระบบ
+          </button>
+        </header>
+
+        <div class="content" style="min-height:650px">
+          ${body}
+
+          <p class="caption">
+            ข้อมูลจำลองสำหรับทดสอบการออกแบบ
+          </p>
+        </div>
+
+        <nav class="mobileNav">
+          ${[
+            ['home', 'หน้าหลัก'],
+            ['bills', 'บิลของฉัน'],
+            ['electric', 'ค่าไฟ'],
+            ['room', 'ห้องของฉัน']
+          ]
+            .map(([p, n]) => `
+              <button
+                class="${page === p ? 'active' : ''}"
+                onclick="go('${p}')"
+              >
+                ${n}
+              </button>
+            `)
+            .join('')}
+        </nav>
+      </div>
+    `;
+  }
+
+  const meterRecords = Object.fromEntries(
+    Array.from({ length: 12 }, (_, i) => [
+      String(201 + i),
+      {
+        prevE: 1240 + i * 90,
+        prevW: 230 + i * 15,
+        e: null,
+        w: null,
+        saved: false
+      }
+    ])
+  );
+
+  function meterValues() {
+    const r = meterRecords[selectedRoom];
+    const es = document.getElementById('electric').value;
+    const ws = document.getElementById('water').value;
+    const e = Number(es);
+    const w = Number(ws);
+
+    return {
+      r,
+      e,
+      w,
+      valid:
+        es.trim() !== '' &&
+        ws.trim() !== '' &&
+        Number.isInteger(e) &&
+        Number.isInteger(w) &&
+        e >= r.prevE &&
+        w >= r.prevW
+    };
+  }
+
+  function calc() {
+    const { r, e, w, valid } = meterValues();
+
+    document.getElementById('calc').textContent = valid
+      ? `ไฟ ${e - r.prevE} หน่วย = ${money((e - r.prevE) * 8)} · น้ำ ${w - r.prevW} หน่วย = ${money((w - r.prevW) * 20)}`
+      : 'กรอกเลขมิเตอร์ทั้งสองช่องเป็นจำนวนเต็ม และไม่น้อยกว่าครั้งก่อน';
+  }
+
+  function saveMeter() {
+    const { r, e, w, valid } = meterValues();
+
+    if (!valid) {
+      notify('ตรวจสอบเลขมิเตอร์ทั้งสองช่องอีกครั้ง');
+      return;
+    }
+
+    Object.assign(r, {
+      e,
+      w,
+      saved: true
+    });
+
+    notify(
+      'บันทึกมิเตอร์ห้อง ' +
+      roomData[selectedRoom].code +
+      ' แล้ว (ข้อมูลจำลอง)'
+    );
+
+    go('meters');
+  }
+
+  const roomData = Object.fromEntries(
+    Array.from({ length: 12 }, (_, i) => {
+      const id = String(201 + i);
+
+      return [
+        id,
+        {
+          id,
+          code: id,
+          floor: 2,
+          type: 'Standard',
+          cooling: 'แอร์',
+          rent: 3500,
+          area: 24,
+          occupied: i < 9,
+          deleted: false
+        }
+      ];
+    })
+  );
+
+  let editingRoom = null;
+  let nextRoomId = 1000;
+  let roomPage = 1;
+
+  const roomPageSize = 5;
+
+  function setRoomPage(n) {
+    roomPage = n;
+    render();
+  }
+
+  const esc = v =>
+    String(v).replace(/[&<>"']/g, c => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[c]));
+
+  const activeRooms = () =>
+    Object.values(roomData).filter(r => !r.deleted);
+
+  const occupancy = () =>
+    activeRooms().length
+      ? Math.round(
+          activeRooms().filter(r => r.occupied).length /
+          activeRooms().length *
+          100
+        )
+      : 0;
+
+  function editRoom(id = null) {
+    editingRoom = id;
+    go('roomEdit');
+  }
+
+  function roomSettings() {
+    const rooms = activeRooms();
+    const totalPages = Math.max(
+      1,
+      Math.ceil(rooms.length / roomPageSize)
+    );
+
+    roomPage = Math.min(Math.max(1, roomPage), totalPages);
+
+    const start = (roomPage - 1) * roomPageSize;
+
+    return `
+      <section class="card" style="margin-top:28px">
+        <div class="head">
+          <div>
+            <h2>จัดการห้องพัก</h2>
+
+            <span class="muted">
+              ${activeRooms().length} ห้อง
+              · มีผู้เช่า ${activeRooms().filter(r => r.occupied).length}
+              · ห้องว่าง ${activeRooms().filter(r => !r.occupied).length}
+            </span>
+          </div>
+
+          ${btn('+ เพิ่มห้อง', 'editRoom()')}
+        </div>
+
+        <div class="tablewrap">
+          <table>
+            <thead>
+              <tr>
+                <th>ห้อง / ชั้น</th>
+                <th>ประเภทห้อง</th>
+                <th>แอร์ / พัดลม</th>
+                <th>ค่าเช่า / เดือน</th>
+                <th>สถานะ</th>
+                <th>จัดการ</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              ${
+                rooms
+                  .slice(start, start + roomPageSize)
+                  .map(r => `
+                    <tr>
+                      <td>
+                        <b>${esc(r.code)}</b>
+                        <div class="small">ชั้น ${r.floor}</div>
+                      </td>
+
+                      <td>${esc(r.type)}</td>
+                      <td>${esc(r.cooling)}</td>
+                      <td>${money(r.rent)}</td>
+                      <td>${r.occupied ? 'มีผู้เช่า' : 'ห้องว่าง'}</td>
+
+                      <td>
+                        <button
+                          class="link"
+                          onclick="editRoom('${r.id}')"
+                        >
+                          แก้ไข
+                        </button>
+
+                        <button
+                          style="color:#bc4252"
+                          onclick="removeRoom('${r.id}')"
+                        >
+                          นำออก
+                        </button>
+                      </td>
+                    </tr>
+                  `)
+                  .join('') ||
+                `
+                  <tr>
+                    <td colspan="6">
+                      ยังไม่มีห้องพัก กดเพิ่มห้องเพื่อเริ่มต้น
+                    </td>
+                  </tr>
+                `
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <div
+          class="between"
+          style="margin-top:18px;flex-wrap:wrap"
+        >
+          <span class="small">
+            แสดง ${rooms.length ? start + 1 : 0}–${Math.min(start + roomPageSize, rooms.length)}
+            จาก ${rooms.length} ห้อง
+          </span>
+
+          <nav
+            aria-label="เปลี่ยนหน้ารายการห้อง"
+            style="display:flex;align-items:center;gap:8px"
+          >
+            <button
+              class="btn secondary"
+              ${roomPage === 1 ? 'disabled' : ''}
+              onclick="setRoomPage(${roomPage - 1})"
+            >
+              ← ก่อนหน้า
+            </button>
+
+            <span class="small" aria-live="polite">
+              หน้า ${roomPage} / ${totalPages}
+            </span>
+
+            <button
+              class="btn secondary"
+              ${roomPage === totalPages ? 'disabled' : ''}
+              onclick="setRoomPage(${roomPage + 1})"
+            >
+              ถัดไป →
+            </button>
+          </nav>
+        </div>
+
+        <p class="caption">
+          จำนวนห้องนับจากรายการ
+          · นำออกได้เมื่อไม่มีผู้เช่า
+          · ข้อมูลต้นแบบจะรีเซ็ตเมื่อรีโหลด
+        </p>
+
+        ${
+          Object.values(roomData).some(r => r.deleted)
+            ? `
+                <details>
+                  <summary>ห้องที่นำออกจากรายการ</summary>
+
+                  ${Object.values(roomData)
+                    .filter(r => r.deleted)
+                    .map(r => `
+                      <div class="row between">
+                        <span>ห้อง ${esc(r.code)}</span>
+
+                        <button
+                          class="link"
+                          onclick="restoreRoom('${r.id}')"
+                        >
+                          กู้คืน
+                        </button>
+                      </div>
+                    `)
+                    .join('')}
+                </details>
+              `
+            : ''
+        }
+      </section>
+    `;
+  }
+
+  function roomEditor() {
+    const r = editingRoom
+      ? roomData[editingRoom]
+      : {
+          code: '',
+          floor: 2,
+          type: 'Standard',
+          cooling: 'แอร์',
+          rent: 3500,
+          area: 24
+        };
+
+    return (
+      heading(
+        editingRoom ? 'แก้ไขห้องพัก' : 'เพิ่มห้องพัก',
+        'กำหนดข้อมูลห้อง ประเภท และอุปกรณ์',
+        btn('← ตั้งค่าหอพัก', "go('settings')", 'secondary')
+      ) +
+      `
+        <form
+          class="card bill"
+          onsubmit="event.preventDefault();saveRoom()"
+        >
+          <div class="grid two">
+            <div>
+              <label for="roomCode">เลขห้อง / ชื่อห้อง</label>
+
+              <input
+                id="roomCode"
+                class="field"
+                maxlength="20"
+                value="${esc(r.code)}"
+                placeholder="เช่น 301 หรือ A301"
+                required
+              >
+            </div>
+
+            <div>
+              <label for="roomFloor">ชั้น</label>
+
+              <input
+                id="roomFloor"
+                class="field"
+                type="number"
+                min="1"
+                max="200"
+                step="1"
+                value="${r.floor}"
+                required
+              >
+            </div>
+          </div>
+
+          <label for="roomType">
+            ประเภทห้อง · เลือกหรือพิมพ์ประเภทใหม่
+          </label>
+
+          <input
+            id="roomType"
+            class="field"
+            list="roomTypeOptions"
+            maxlength="50"
+            value="${esc(r.type)}"
+            required
+          >
+
+          <datalist id="roomTypeOptions">
+            ${[
+              ...new Set([
+                'Standard',
+                'Deluxe',
+                ...activeRooms().map(x => x.type)
+              ])
+            ]
+              .map(t => `<option value="${esc(t)}">`)
+              .join('')}
+          </datalist>
+
+          <label for="roomCooling">แอร์ / พัดลม</label>
+
+          <select id="roomCooling" class="field">
+            ${['แอร์', 'พัดลม', 'แอร์และพัดลม']
+              .map(t => `
+                <option ${r.cooling === t ? 'selected' : ''}>
+                  ${t}
+                </option>
+              `)
+              .join('')}
+          </select>
+
+          <div class="grid two" style="margin-top:16px">
+            <div>
+              <label for="roomRent">ค่าเช่า / เดือน (บาท)</label>
+
+              <input
+                id="roomRent"
+                class="field"
+                type="number"
+                min="0"
+                step="0.01"
+                value="${r.rent}"
+                required
+              >
+            </div>
+
+            <div>
+              <label for="roomArea">ขนาดห้อง (ตร.ม.)</label>
+
+              <input
+                id="roomArea"
+                class="field"
+                type="number"
+                min="1"
+                step="0.01"
+                value="${r.area}"
+                required
+              >
+            </div>
+          </div>
+
+          <button class="btn" type="submit">
+            ${editingRoom ? 'บันทึกการแก้ไข' : 'เพิ่มห้องพัก'}
+          </button>
+
+          ${btn('ยกเลิก', "go('settings')", 'secondary')}
+
+          <p class="caption">
+            การแก้ข้อมูลห้องไม่เปลี่ยนบิลที่ออกไว้แล้ว
+            · ห้องใหม่จะเริ่มเป็นห้องว่าง
+          </p>
+        </form>
+      `
+    );
+  }
+
+  function saveRoom() {
+    const val = id =>
+      document.getElementById(id).value.trim();
+
+    const code = val('roomCode');
+    const type = val('roomType');
+    const cooling = val('roomCooling');
+    const floor = Number(val('roomFloor'));
+    const rent = Number(val('roomRent'));
+    const area = Number(val('roomArea'));
+
+    if (
+      !code ||
+      !type ||
+      !val('roomRent') ||
+      !Number.isInteger(floor) ||
+      floor < 1 ||
+      floor > 200 ||
+      !Number.isFinite(rent) ||
+      rent < 0 ||
+      !Number.isFinite(area) ||
+      area < 1 ||
+      !['แอร์', 'พัดลม', 'แอร์และพัดลม'].includes(cooling)
+    ) {
+      notify('กรุณากรอกข้อมูลห้องให้ครบและถูกต้อง');
+      return;
+    }
+
+    if (
+      Object.values(roomData).some(r =>
+        r.id !== editingRoom &&
+        r.code.toLowerCase() === code.toLowerCase()
+      )
+    ) {
+      notify(
+        'เลขห้องนี้มีอยู่แล้ว รวมถึงห้องที่นำออก กรุณาแก้ไขหรือกู้คืนห้องเดิม'
+      );
+      return;
+    }
+
+    const id = editingRoom || String(nextRoomId++);
+
+    roomData[id] = {
+      ...roomData[id],
+      id,
+      code,
+      type,
+      cooling,
+      floor,
+      rent,
+      area,
+      occupied: roomData[id]?.occupied || false,
+      deleted: false
+    };
+
+    if (!meterRecords[id]) {
+      meterRecords[id] = {
+        prevE: 0,
+        prevW: 0,
+        e: null,
+        w: null,
+        saved: false
+      };
+    }
+
+    if (!editingRoom) {
+      roomPage = Math.ceil(activeRooms().length / roomPageSize);
+    }
+
+    notify(editingRoom ? 'แก้ไขห้องแล้ว' : 'เพิ่มห้องแล้ว');
+    go('settings');
+  }
+
+  function removeRoom(id) {
+    const r = roomData[id];
+
+    if (r.occupied) {
+      notify('ห้องนี้มีผู้เช่า ต้องย้ายผู้เช่าออกก่อนนำห้องออก');
+      return;
+    }
+
+    if (
+      !window.confirm(
+        'นำห้อง ' + r.code + ' ออกจากรายการ? สามารถกู้คืนได้'
+      )
+    ) {
+      return;
+    }
+
+    r.deleted = true;
+
+    notify('นำห้องออกแล้ว');
+    render();
+  }
+
+  function restoreRoom(id) {
+    roomData[id].deleted = false;
+
+    roomPage =
+      Math.floor(
+        activeRooms().findIndex(r => r.id === id) / roomPageSize
+      ) + 1;
+
+    notify('กู้คืนห้องแล้ว');
+    render();
+  }
+
+  const registeredTenants = [
+    {
+      id: 'u101',
+      name: 'ณัฐพล ใจดี',
+      username: 'nattapon',
+      phone: '08X-XXX-0101',
+      roomId: null
+    },
+    {
+      id: 'u102',
+      name: 'สุภาวดี สุขใจ',
+      username: 'supawadee',
+      phone: '09X-XXX-0102',
+      roomId: null
+    },
+    {
+      id: 'u103',
+      name: 'ณัฐพล ใจดี',
+      username: 'nat.j',
+      phone: '08X-XXX-0103',
+      roomId: null
+    }
+  ];
+
+  function showTenantContact() {
+    const u = registeredTenants.find(
+      u => u.id === document.getElementById('tenantAccount').value
+    );
+
+    document.getElementById('tenantContact').value = u
+      ? u.phone
+      : '';
+  }
+
+  function assignTenant() {
+    const u = registeredTenants.find(
+      u => u.id === document.getElementById('tenantAccount').value
+    );
+
+    const r = roomData[
+      document.getElementById('tenantRoom').value
+    ];
+
+    const date = document.getElementById('tenantMoveIn').value;
+
+    if (
+      !u ||
+      u.roomId !== null ||
+      !r ||
+      r.deleted ||
+      r.occupied ||
+      !/^\d{4}-\d{2}-\d{2}$/.test(date)
+    ) {
+      notify('กรุณาเลือกบัญชีผู้เช่า ห้องว่าง และวันที่เข้าอยู่ให้ครบ');
+      return;
+    }
+
+    u.roomId = r.id;
+    u.moveIn = date;
+    r.occupied = true;
+
+    notify('ผูกบัญชีผู้เช่ากับห้อง ' + r.code + ' แล้ว');
+    go('tenants');
+  }
+
+  function render() {
+    document.getElementById('adminTab').className =
+      mode === 'admin' ? 'chosen' : '';
+
+    document.getElementById('tenantTab').className =
+      mode === 'tenant' ? 'chosen' : '';
+
+    document.getElementById('app').innerHTML =
+      mode === 'admin'
+        ? admin()
+        : mode === 'tenant'
+          ? tenant()
+          : `
+              <form
+                class="login card"
+                onsubmit="event.preventDefault();portal(document.getElementById('demoRole').value)"
+              >
+                <div class="logo">HORPAK.</div>
+
+                <h1 style="margin-top:25px">เข้าสู่ระบบ</h1>
+
+                <p class="muted">
+                  จัดการทุกเรื่องของหอพักในที่เดียว
+                </p>
+
+                <label>ชื่อผู้ใช้ตัวอย่าง</label>
+
+                <input
+                  class="field"
+                  placeholder="demo"
+                  value="demo"
+                  required
+                >
+
+                <label>รหัสผ่านตัวอย่าง</label>
+
+                <input
+                  class="field"
+                  type="password"
+                  value="demo1234"
+                  required
+                >
+
+                <label>บทบาทสำหรับทดลองต้นแบบ</label>
+
+                <select class="field" id="demoRole">
+                  <option value="admin">Admin</option>
+                  <option value="tenant">Tenant</option>
+                </select>
+
+                <button
+                  class="btn"
+                  style="width:100%;margin-top:25px"
+                >
+                  เข้าสู่ต้นแบบ
+                </button>
+
+                <p class="caption">
+                  ไม่ใช่ระบบยืนยันตัวตนจริง
+                  · ระบบจริงจะเลือกสิทธิ์จากบัญชีผู้ใช้
+                  ไม่ให้ผู้ใช้เลือกบทบาท
+                </p>
+              </form>
+            `;
+  }
+
+  render();
+</script>
+
+</html>
